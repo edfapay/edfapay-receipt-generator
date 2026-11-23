@@ -148,7 +148,7 @@
     .amount { margin: 4px 0 0; text-align: right; font-size: 1.15rem; font-weight: 700; }
     .status-block { margin-top: 18px; text-align: center; }
     .status-ar, .status { margin: 0; font-size: 1.15rem; font-weight: 700; }
-    .status { display: block; padding: 0; background: none; color: inherit; }
+    .status { display: block; padding: 0; background: none; color: inherit; text-transform: uppercase; }
     .verification { margin-top: 14px; text-align: center; }
     .verification-ar, .verification-en { margin: 0; font-size: 1.05rem; line-height: 1.6; }
     .approval-block { margin-top: 22px; }
@@ -323,6 +323,11 @@
       document.getElementById(id).textContent = value;
     }
 
+    function formatReceiptDate(value) {
+      const isoDate = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      return isoDate ? `${isoDate[3]}/${isoDate[2]}/${isoDate[1]}` : value;
+    }
+
     function formatAmount(amount, currency) {
       if (!amount) return "—";
       const numericAmount = Number(amount.replace(/,/g, ""));
@@ -340,7 +345,7 @@
 
     const dateValue = getValue("date");
     const dateAndTime = dateValue.match(/^(.*?)(?:\s+(\d{1,2}:\d{2}(?::\d{2})?))$/);
-    const receiptDate = dateAndTime ? dateAndTime[1] : dateValue;
+    const receiptDate = formatReceiptDate(dateAndTime ? dateAndTime[1] : dateValue);
     const receiptTime = dateAndTime ? dateAndTime[2] : "";
     const amount = formatAmount(getValue("amount"), getValue("currency"));
     const transactionId = getValue("transaction_id");
@@ -359,8 +364,8 @@
     setText("amount", amount === "—" ? "﷼1.00" : amount);
     setText("amount-ar", amount === "—" ? "﷼١.٠٠" : amount);
     setText("status", status || "APPROVED");
-    setText("approval-code", transactionId || "217127");
-    setText("approval-code-ar", transactionId || "٢١٧١٢٧");
+    setText("approval-code", "217127");
+    setText("approval-code-ar", "٢١٧١٢٧");
 
     const customDetails = [getValue("description"), customer && customer !== "4847 83** **** 6194" ? `Customer: ${customer}` : ""]
       .filter(Boolean)
