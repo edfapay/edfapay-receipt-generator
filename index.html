@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#ffffff">
-  <title>Receipt Generator</title>
+  <title>Receipt</title>
   <style>
     :root {
       color-scheme: light;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: #172033;
-      background: #f4f6fb;
+      background: #fff;
       font-synthesis: none;
       text-rendering: optimizeLegibility;
     }
@@ -20,69 +20,9 @@
     body { margin: 0; min-width: 320px; }
 
     .page {
-      width: min(100% - 32px, 1040px);
-      margin: 48px auto;
+      width: min(100%, 608px);
+      margin: 0 auto;
     }
-
-    header { margin-bottom: 28px; }
-
-    .eyebrow {
-      margin: 0 0 8px;
-      color: #5263d9;
-      font-size: 0.75rem;
-      font-weight: 750;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-    }
-
-    h1 { margin: 0; font-size: clamp(1.8rem, 4vw, 2.5rem); letter-spacing: -0.04em; }
-    header p:last-child { margin: 10px 0 0; color: #64708a; }
-
-    .layout { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(340px, 1.1fr); gap: 24px; align-items: start; }
-
-    .panel, .receipt {
-      border: 1px solid #e4e8f1;
-      border-radius: 18px;
-      background: #fff;
-      box-shadow: 0 12px 36px rgb(34 48 86 / 7%);
-    }
-
-    .panel { padding: 24px; }
-    h2 { margin: 0 0 18px; font-size: 1.1rem; }
-    form { display: grid; gap: 14px; }
-    .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    label { display: grid; gap: 6px; color: #4b5670; font-size: 0.82rem; font-weight: 650; }
-
-    input, textarea {
-      width: 100%;
-      border: 1px solid #dce1ec;
-      border-radius: 9px;
-      padding: 10px 11px;
-      background: #fff;
-      color: #172033;
-      font: inherit;
-      font-size: 0.92rem;
-    }
-
-    input:focus, textarea:focus { outline: 3px solid rgb(82 99 217 / 18%); border-color: #6877e5; }
-    textarea { min-height: 76px; resize: vertical; }
-
-    button {
-      border: 0;
-      border-radius: 10px;
-      padding: 12px 16px;
-      background: #4658d4;
-      color: #fff;
-      font: inherit;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    button:hover { background: #3547be; }
-    .secondary { border: 1px solid #dce1ec; background: #fff; color: #26314a; }
-    .secondary:hover { background: #f4f6fb; }
-    .button-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
-    .hint { margin: 16px 0 0; color: #717c94; font-size: 0.78rem; line-height: 1.5; }
 
     .receipt {
       position: relative;
@@ -94,7 +34,6 @@
       border: 0;
       border-radius: 0;
       background: #fff;
-      box-shadow: 0 12px 36px rgb(34 48 86 / 7%);
       color: #222;
       font-family: Arial, "Noto Sans Arabic", sans-serif;
     }
@@ -164,18 +103,10 @@
     .receipt-custom-details { margin-top: 14px; font-size: 0.8rem; line-height: 1.5; overflow-wrap: anywhere; }
     .receipt-custom-details:empty { display: none; }
 
-    @media (max-width: 760px) {
-      .page { margin: 28px auto; }
-      .layout { grid-template-columns: 1fr; }
-      .receipt { grid-row: 1; min-height: 0; }
-    }
-
     @media print {
       :root { background: #fff; }
       .page { width: 100%; margin: 0; }
-      header, .panel, .button-row { display: none !important; }
-      .layout { display: block; }
-      .receipt { max-width: 608px; min-height: 1000px; margin: 0 auto; border: 0; box-shadow: none; }
+      .receipt { max-width: 608px; min-height: 1000px; margin: 0 auto; border: 0; }
       .receipt::after { color: rgb(206 54 74 / 6%); }
       body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
     }
@@ -183,117 +114,60 @@
 </head>
 <body>
   <main class="page">
-    <header>
-      <p class="eyebrow">Free, static receipt builder</p>
-      <h1>Receipt Generator</h1>
-      <p>Fill in the details or provide them in the URL to create a printable demo receipt.</p>
-    </header>
-
-    <div class="layout">
-      <section class="panel" aria-labelledby="form-title">
-        <h2 id="form-title">Receipt details</h2>
-        <form id="receipt-form" method="get">
-          <label>Merchant
-            <input name="merchant" autocomplete="organization" placeholder="Example Store">
-          </label>
-          <div class="field-grid">
-            <label>Amount
-              <input name="amount" inputmode="decimal" placeholder="49.99">
-            </label>
-            <label>Currency
-              <input name="currency" maxlength="3" placeholder="USD">
-            </label>
-          </div>
-          <div class="field-grid">
-            <label>Transaction ID
-              <input name="transaction_id" placeholder="TXN-12345">
-            </label>
-            <label>Date
-              <input name="date" placeholder="2026-01-31 14:30">
-            </label>
-          </div>
-          <div class="field-grid">
-            <label>Status
-              <input name="status" placeholder="Demo">
-            </label>
-            <label>Payment method
-              <input name="payment_method" placeholder="Card">
-            </label>
-          </div>
-          <div class="field-grid">
-            <label>Order ID
-              <input name="order_id" placeholder="ORDER-123">
-            </label>
-            <label>Customer
-              <input name="customer" autocomplete="name" placeholder="Alex Example">
-            </label>
-          </div>
-          <label>Description
-            <textarea name="description" placeholder="Item or service description"></textarea>
-          </label>
-          <button type="submit">Generate receipt URL</button>
-        </form>
-        <p class="hint">This page runs entirely in your browser. The printed receipt is marked DEMO / NOT PAYMENT PROOF and does not verify a transaction.</p>
-      </section>
-
-      <section class="receipt" aria-label="Receipt preview" aria-live="polite">
-        <div class="receipt-content">
-          <span class="demo-badge">DEMO · NOT PAYMENT PROOF</span>
-          <div class="receipt-heading">
-            <h2 class="merchant" id="merchant">Manal Hamad AlMugbel</h2>
-            <p class="merchant-ar" lang="ar" dir="rtl">الحزم</p>
-            <p class="receipt-title">AlHazm</p>
-          </div>
-          <div class="receipt-meta">
-            <div class="receipt-row"><span id="date">23/11/2026</span><span id="time">13:41:38</span></div>
-          </div>
-          <div class="receipt-identifiers">
-            <div class="receipt-row"><span id="transaction-id">NCBB 104219500256</span><span id="order-id">5178057B00000000</span></div>
-            <div class="receipt-row"><span>5499 000625&nbsp; 1.0.0</span><span>231041380625</span></div>
-          </div>
-          <div class="receipt-payment">
-            <div class="receipt-row"><span id="payment-method">mada</span><span lang="ar" dir="rtl">مدى</span></div>
-            <div class="receipt-row"><span>PURCHASE</span><span lang="ar" dir="rtl">شراء</span></div>
-          </div>
-          <div class="receipt-row receipt-card"><span id="customer">4847 83** **** 6194</span><span>03/29</span></div>
-          <div class="amount-block">
-            <p class="amount-ar-label" lang="ar" dir="rtl">مبلغ الشراء</p>
-            <div class="amount-row"><span id="amount-ar">﷼١.٠٠</span></div>
-            <p class="amount-label">PURCHASE AMOUNT</p>
-            <p class="amount" id="amount">﷼1.00</p>
-          </div>
-          <div class="status-block">
-            <p class="status-ar" lang="ar" dir="rtl">مقبولة</p>
-            <p class="status" id="status">APPROVED</p>
-          </div>
-          <div class="verification">
-            <p class="verification-ar" lang="ar" dir="rtl">لا يتطلب التحقق</p>
-            <p class="verification-en">NO VERIFICATION REQUIRED</p>
-          </div>
-          <div class="approval-block">
-            <div class="receipt-row"><span id="approval-code-ar">٢١٧١٢٧</span><span lang="ar" dir="rtl">رمز الموافقة</span></div>
-            <div class="receipt-row"><span>Approval Code</span><span id="approval-code">217127</span></div>
-            <div class="receipt-row"><span id="footer-date">23/11/2026</span><span id="footer-time">13:41:38</span></div>
-          </div>
-          <div class="receipt-footer">
-            <p lang="ar" dir="rtl">شكرا لاستخدامك مدى</p>
-            <p>THANK YOU FOR USING mada</p>
-            <p lang="ar" dir="rtl">يرجى الاحتفاظ بالإيصال</p>
-            <p>PLEASE RETAIN RECEIPT</p>
-            <p class="copy-label" lang="ar" dir="rtl">** نسخة العميل **</p>
-            <p class="copy-label">** CUSTOMER COPY **</p>
-          </div>
-          <div class="receipt-technical">
-            <span>CONTACTLESS&nbsp; 000</span><span>A0000002282010</span><span>0000000000</span>
-            <span>0000&nbsp; 80&nbsp; 420300</span><span>410859D733A8DDD2</span><span>03</span>
-          </div>
-          <div class="receipt-custom-details" id="custom-details"></div>
+    <section class="receipt" aria-label="Receipt" aria-live="polite">
+      <div class="receipt-content">
+        <span class="demo-badge">DEMO · NOT PAYMENT PROOF</span>
+        <div class="receipt-heading">
+          <h2 class="merchant" id="merchant">Manal Hamad AlMugbel</h2>
+          <p class="merchant-ar" lang="ar" dir="rtl">الحزم</p>
+          <p class="receipt-title">AlHazm</p>
         </div>
-        <div class="button-row">
-          <button class="secondary" id="print-button" type="button">Print receipt</button>
+        <div class="receipt-meta">
+          <div class="receipt-row"><span id="date">23/11/2026</span><span id="time">13:41:38</span></div>
         </div>
-      </section>
-    </div>
+        <div class="receipt-identifiers">
+          <div class="receipt-row"><span id="transaction-id">NCBB 104219500256</span><span id="order-id">5178057B00000000</span></div>
+          <div class="receipt-row"><span>5499 000625&nbsp; 1.0.0</span><span>231041380625</span></div>
+        </div>
+        <div class="receipt-payment">
+          <div class="receipt-row"><span id="payment-method">mada</span><span lang="ar" dir="rtl">مدى</span></div>
+          <div class="receipt-row"><span>PURCHASE</span><span lang="ar" dir="rtl">شراء</span></div>
+        </div>
+        <div class="receipt-row receipt-card"><span id="customer">4847 83** **** 6194</span><span>03/29</span></div>
+        <div class="amount-block">
+          <p class="amount-ar-label" lang="ar" dir="rtl">مبلغ الشراء</p>
+          <div class="amount-row"><span id="amount-ar">﷼١.٠٠</span></div>
+          <p class="amount-label">PURCHASE AMOUNT</p>
+          <p class="amount" id="amount">﷼1.00</p>
+        </div>
+        <div class="status-block">
+          <p class="status-ar" lang="ar" dir="rtl">مقبولة</p>
+          <p class="status" id="status">APPROVED</p>
+        </div>
+        <div class="verification">
+          <p class="verification-ar" lang="ar" dir="rtl">لا يتطلب التحقق</p>
+          <p class="verification-en">NO VERIFICATION REQUIRED</p>
+        </div>
+        <div class="approval-block">
+          <div class="receipt-row"><span id="approval-code-ar">٢١٧١٢٧</span><span lang="ar" dir="rtl">رمز الموافقة</span></div>
+          <div class="receipt-row"><span>Approval Code</span><span id="approval-code">217127</span></div>
+          <div class="receipt-row"><span id="footer-date">23/11/2026</span><span id="footer-time">13:41:38</span></div>
+        </div>
+        <div class="receipt-footer">
+          <p lang="ar" dir="rtl">شكرا لاستخدامك مدى</p>
+          <p>THANK YOU FOR USING mada</p>
+          <p lang="ar" dir="rtl">يرجى الاحتفاظ بالإيصال</p>
+          <p>PLEASE RETAIN RECEIPT</p>
+          <p class="copy-label" lang="ar" dir="rtl">** نسخة العميل **</p>
+          <p class="copy-label">** CUSTOMER COPY **</p>
+        </div>
+        <div class="receipt-technical">
+          <span>CONTACTLESS&nbsp; 000</span><span>A0000002282010</span><span>0000000000</span>
+          <span>0000&nbsp; 80&nbsp; 420300</span><span>410859D733A8DDD2</span><span>03</span>
+        </div>
+        <div class="receipt-custom-details" id="custom-details"></div>
+      </div>
+    </section>
   </main>
 
   <script>
@@ -372,12 +246,6 @@
       .join(" · ");
     setText("custom-details", customDetails);
 
-    for (const [field, value] of Object.entries(aliases)) {
-      const input = document.querySelector(`[name="${field}"]`);
-      input.value = getValue(field);
-    }
-
-    document.getElementById("print-button").addEventListener("click", () => window.print());
   </script>
 </body>
 </html>
