@@ -44,7 +44,7 @@
       left: 50%;
       z-index: 0;
       color: rgb(206 54 74 / 6%);
-      content: "DEMO";
+      content: attr(data-watermark);
       font-size: clamp(4rem, 12vw, 7rem);
       font-weight: 900;
       letter-spacing: 0.12em;
@@ -66,6 +66,7 @@
       font-weight: 800;
       letter-spacing: 0.08em;
     }
+    .demo-badge:empty { display: none; }
 
     .receipt-heading { padding-top: 0; text-align: center; }
     .merchant { margin: 0; overflow-wrap: anywhere; font-size: 1.45rem; line-height: 1.2; }
@@ -87,7 +88,7 @@
     .amount { margin: 4px 0 0; text-align: right; font-size: 1.15rem; font-weight: 700; }
     .status-block { margin-top: 18px; text-align: center; }
     .status-ar, .status { margin: 0; font-size: 1.15rem; font-weight: 700; }
-    .status { display: block; padding: 0; background: none; color: inherit; text-transform: uppercase; }
+    .status { display: block; padding: 0; background: none; color: inherit; }
     .verification { margin-top: 14px; text-align: center; }
     .verification-ar, .verification-en { margin: 0; font-size: 1.05rem; line-height: 1.6; }
     .approval-block { margin-top: 22px; }
@@ -102,6 +103,7 @@
     .receipt-technical span:nth-child(3n) { text-align: right; }
     .receipt-custom-details { margin-top: 14px; font-size: 0.8rem; line-height: 1.5; overflow-wrap: anywhere; }
     .receipt-custom-details:empty { display: none; }
+    .receipt-error { margin: 3rem 0; color: #a52e40; text-align: center; }
 
     @media print {
       :root { background: #fff; }
@@ -114,56 +116,56 @@
 </head>
 <body>
   <main class="page">
-    <section class="receipt" aria-label="Receipt" aria-live="polite">
+    <section class="receipt" id="receipt" aria-label="Receipt" aria-live="polite">
       <div class="receipt-content">
-        <span class="demo-badge">DEMO · NOT PAYMENT PROOF</span>
+        <span class="demo-badge" id="notice"></span>
         <div class="receipt-heading">
-          <h2 class="merchant" id="merchant">Manal Hamad AlMugbel</h2>
-          <p class="merchant-ar" lang="ar" dir="rtl">الحزم</p>
-          <p class="receipt-title">AlHazm</p>
+          <h2 class="merchant" id="merchant"></h2>
+          <p class="merchant-ar" id="merchant-ar" lang="ar" dir="rtl"></p>
+          <p class="receipt-title" id="merchant-location"></p>
         </div>
         <div class="receipt-meta">
-          <div class="receipt-row"><span id="date">23/11/2026</span><span id="time">13:41:38</span></div>
+          <div class="receipt-row"><span id="date"></span><span id="time"></span></div>
         </div>
         <div class="receipt-identifiers">
-          <div class="receipt-row"><span id="transaction-id">NCBB 104219500256</span><span id="order-id">5178057B00000000</span></div>
-          <div class="receipt-row"><span>5499 000625&nbsp; 1.0.0</span><span>231041380625</span></div>
+          <div class="receipt-row"><span id="transaction-id"></span><span id="order-id"></span></div>
+          <div class="receipt-row"><span id="identifier-left"></span><span id="identifier-right"></span></div>
         </div>
         <div class="receipt-payment">
-          <div class="receipt-row"><span id="payment-method">mada</span><span lang="ar" dir="rtl">مدى</span></div>
-          <div class="receipt-row"><span>PURCHASE</span><span lang="ar" dir="rtl">شراء</span></div>
+          <div class="receipt-row"><span id="payment-method"></span><span id="payment-method-ar" lang="ar" dir="rtl"></span></div>
+          <div class="receipt-row"><span id="transaction-type"></span><span id="transaction-type-ar" lang="ar" dir="rtl"></span></div>
         </div>
-        <div class="receipt-row receipt-card"><span id="customer">4847 83** **** 6194</span><span>03/29</span></div>
+        <div class="receipt-row receipt-card"><span id="card-number"></span><span id="card-expiry"></span></div>
         <div class="amount-block">
-          <p class="amount-ar-label" lang="ar" dir="rtl">مبلغ الشراء</p>
-          <div class="amount-row"><span id="amount-ar">﷼١.٠٠</span></div>
-          <p class="amount-label">PURCHASE AMOUNT</p>
-          <p class="amount" id="amount">﷼1.00</p>
+          <p class="amount-ar-label" id="amount-label-ar" lang="ar" dir="rtl"></p>
+          <div class="amount-row"><span id="amount-ar"></span></div>
+          <p class="amount-label" id="amount-label"></p>
+          <p class="amount" id="amount"></p>
         </div>
         <div class="status-block">
-          <p class="status-ar" lang="ar" dir="rtl">مقبولة</p>
-          <p class="status" id="status">APPROVED</p>
+          <p class="status-ar" id="status-ar" lang="ar" dir="rtl"></p>
+          <p class="status" id="status"></p>
         </div>
         <div class="verification">
-          <p class="verification-ar" lang="ar" dir="rtl">لا يتطلب التحقق</p>
-          <p class="verification-en">NO VERIFICATION REQUIRED</p>
+          <p class="verification-ar" id="verification-ar" lang="ar" dir="rtl"></p>
+          <p class="verification-en" id="verification"></p>
         </div>
         <div class="approval-block">
-          <div class="receipt-row"><span id="approval-code-ar">٢١٧١٢٧</span><span lang="ar" dir="rtl">رمز الموافقة</span></div>
-          <div class="receipt-row"><span>Approval Code</span><span id="approval-code">217127</span></div>
-          <div class="receipt-row"><span id="footer-date">23/11/2026</span><span id="footer-time">13:41:38</span></div>
+          <div class="receipt-row"><span id="approval-code-ar"></span><span id="approval-label-ar" lang="ar" dir="rtl"></span></div>
+          <div class="receipt-row"><span id="approval-label"></span><span id="approval-code"></span></div>
+          <div class="receipt-row"><span id="footer-date"></span><span id="footer-time"></span></div>
         </div>
         <div class="receipt-footer">
-          <p lang="ar" dir="rtl">شكرا لاستخدامك مدى</p>
-          <p>THANK YOU FOR USING mada</p>
-          <p lang="ar" dir="rtl">يرجى الاحتفاظ بالإيصال</p>
-          <p>PLEASE RETAIN RECEIPT</p>
-          <p class="copy-label" lang="ar" dir="rtl">** نسخة العميل **</p>
-          <p class="copy-label">** CUSTOMER COPY **</p>
+          <p id="thank-you-ar" lang="ar" dir="rtl"></p>
+          <p id="thank-you"></p>
+          <p id="retain-ar" lang="ar" dir="rtl"></p>
+          <p id="retain"></p>
+          <p class="copy-label" id="copy-ar" lang="ar" dir="rtl"></p>
+          <p class="copy-label" id="copy"></p>
         </div>
         <div class="receipt-technical">
-          <span>CONTACTLESS&nbsp; 000</span><span>A0000002282010</span><span>0000000000</span>
-          <span>0000&nbsp; 80&nbsp; 420300</span><span>410859D733A8DDD2</span><span>03</span>
+          <span id="technical-1"></span><span id="technical-2"></span><span id="technical-3"></span>
+          <span id="technical-4"></span><span id="technical-5"></span><span id="technical-6"></span>
         </div>
         <div class="receipt-custom-details" id="custom-details"></div>
       </div>
@@ -172,6 +174,7 @@
 
   <script>
     const params = new URLSearchParams(window.location.search);
+    const receipt = document.getElementById("receipt");
     const aliases = {
       merchant: ["merchant", "merchant_name"],
       amount: ["amount", "total"],
@@ -184,6 +187,39 @@
       customer: ["customer", "customer_name"],
       description: ["description", "item"]
     };
+    const defaultData = {
+      notice: "DEMO · NOT PAYMENT PROOF",
+      watermark: "DEMO",
+      header: ["Manal Hamad AlMugbel", "الحزم", "AlHazm"],
+      dateTime: ["23/11/2026", "13:41:38"],
+      identifiers: [
+        ["NCBB 104219500256", "5178057B00000000"],
+        ["5499 000625 1.0.0", "231041380625"]
+      ],
+      payment: [["mada", "مدى"], ["PURCHASE", "شراء"]],
+      card: ["4847 83** **** 6194", "03/29"],
+      amount: ["مبلغ الشراء", "﷼١.٠٠", "PURCHASE AMOUNT", "﷼1.00"],
+      status: ["مقبولة", "APPROVED"],
+      verification: ["لا يتطلب التحقق", "NO VERIFICATION REQUIRED"],
+      approval: [
+        ["٢١٧١٢٧", "رمز الموافقة"],
+        ["Approval Code", "217127"],
+        ["23/11/2026", "13:41:38"]
+      ],
+      footer: [
+        "شكرا لاستخدامك مدى",
+        "THANK YOU FOR USING mada",
+        "يرجى الاحتفاظ بالإيصال",
+        "PLEASE RETAIN RECEIPT",
+        "** نسخة العميل **",
+        "** CUSTOMER COPY **"
+      ],
+      technical: [
+        ["CONTACTLESS 000", "A0000002282010", "0000000000"],
+        ["0000 80 420300", "410859D733A8DDD2", "03"]
+      ],
+      customDetails: ""
+    };
 
     function getValue(key) {
       for (const alias of aliases[key]) {
@@ -191,10 +227,6 @@
         if (value !== null && value.trim() !== "") return value.trim();
       }
       return "";
-    }
-
-    function setText(id, value) {
-      document.getElementById(id).textContent = value;
     }
 
     function formatReceiptDate(value) {
@@ -217,34 +249,162 @@
       }
     }
 
-    const dateValue = getValue("date");
-    const dateAndTime = dateValue.match(/^(.*?)(?:\s+(\d{1,2}:\d{2}(?::\d{2})?))$/);
-    const receiptDate = formatReceiptDate(dateAndTime ? dateAndTime[1] : dateValue);
-    const receiptTime = dateAndTime ? dateAndTime[2] : "";
-    const amount = formatAmount(getValue("amount"), getValue("currency"));
-    const transactionId = getValue("transaction_id");
-    const orderId = getValue("order_id");
-    const customer = getValue("customer");
-    const status = getValue("status");
+    function createLegacyData() {
+      const data = JSON.parse(JSON.stringify(defaultData));
+      const dateValue = getValue("date");
+      const dateAndTime = dateValue.match(/^(.*?)(?:\s+(\d{1,2}:\d{2}(?::\d{2})?))$/);
+      const receiptDate = formatReceiptDate(dateAndTime ? dateAndTime[1] : dateValue);
+      const amountValue = getValue("amount");
+      const amount = formatAmount(amountValue, getValue("currency"));
+      const transactionId = getValue("transaction_id");
+      const orderId = getValue("order_id");
+      const customer = getValue("customer");
 
-    setText("merchant", getValue("merchant") || "Manal Hamad AlMugbel");
-    setText("date", receiptDate || "23/11/2026");
-    setText("footer-date", receiptDate || "23/11/2026");
-    setText("time", receiptTime || "13:41:38");
-    setText("footer-time", receiptTime || "13:41:38");
-    setText("transaction-id", transactionId || "NCBB 104219500256");
-    setText("order-id", orderId || "5178057B00000000");
-    setText("payment-method", getValue("payment_method") || "mada");
-    setText("amount", amount === "—" ? "﷼1.00" : amount);
-    setText("amount-ar", amount === "—" ? "﷼١.٠٠" : amount);
-    setText("status", status || "APPROVED");
-    setText("approval-code", "217127");
-    setText("approval-code-ar", "٢١٧١٢٧");
+      if (getValue("merchant")) data.header[0] = getValue("merchant");
+      if (receiptDate) {
+        data.dateTime[0] = receiptDate;
+        data.approval[2][0] = receiptDate;
+      }
+      if (dateAndTime) {
+        data.dateTime[1] = dateAndTime[2];
+        data.approval[2][1] = dateAndTime[2];
+      }
+      if (transactionId) data.identifiers[0][0] = transactionId;
+      if (orderId) data.identifiers[0][1] = orderId;
+      if (getValue("payment_method")) data.payment[0][0] = getValue("payment_method");
+      if (amountValue) data.amount[1] = data.amount[3] = amount;
+      if (getValue("status")) data.status[1] = getValue("status");
+      data.customDetails = [
+        customer && customer !== data.card[0] ? `Customer: ${customer}` : "",
+        getValue("description")
+      ].filter(Boolean).join(" · ");
+      return data;
+    }
 
-    const customDetails = [getValue("description"), customer && customer !== "4847 83** **** 6194" ? `Customer: ${customer}` : ""]
-      .filter(Boolean)
-      .join(" · ");
-    setText("custom-details", customDetails);
+    function asText(value, path) {
+      if (typeof value !== "string" && (typeof value !== "number" || !Number.isFinite(value))) {
+        throw new TypeError(`${path} must be a string or number.`);
+      }
+      return String(value);
+    }
+
+    function readArray(value, path, shape) {
+      if (!Array.isArray(value) || value.length !== shape[0]) {
+        throw new TypeError(`${path} must contain ${shape[0]} item(s).`);
+      }
+      return value.map((item, index) => shape.length === 1
+        ? asText(item, `${path}[${index}]`)
+        : readArray(item, `${path}[${index}]`, shape.slice(1)));
+    }
+
+    function validateData(value) {
+      if (!value || typeof value !== "object" || Array.isArray(value)) {
+        throw new TypeError("receiptData must be a JSON object.");
+      }
+
+      const data = {
+        notice: asText(value.notice, "notice"),
+        watermark: asText(value.watermark, "watermark"),
+        customDetails: asText(value.customDetails, "customDetails")
+      };
+      const fields = {
+        header: [3],
+        dateTime: [2],
+        identifiers: [2, 2],
+        payment: [2, 2],
+        card: [2],
+        amount: [4],
+        status: [2],
+        verification: [2],
+        approval: [3, 2],
+        footer: [6],
+        technical: [2, 3]
+      };
+
+      for (const [field, shape] of Object.entries(fields)) {
+        data[field] = readArray(value[field], field, shape);
+      }
+      return data;
+    }
+
+    function renderData(data) {
+      const textById = {
+        notice: data.notice,
+        merchant: data.header[0],
+        "merchant-ar": data.header[1],
+        "merchant-location": data.header[2],
+        date: data.dateTime[0],
+        time: data.dateTime[1],
+        "transaction-id": data.identifiers[0][0],
+        "order-id": data.identifiers[0][1],
+        "identifier-left": data.identifiers[1][0],
+        "identifier-right": data.identifiers[1][1],
+        "payment-method": data.payment[0][0],
+        "payment-method-ar": data.payment[0][1],
+        "transaction-type": data.payment[1][0],
+        "transaction-type-ar": data.payment[1][1],
+        "card-number": data.card[0],
+        "card-expiry": data.card[1],
+        "amount-label-ar": data.amount[0],
+        "amount-ar": data.amount[1],
+        "amount-label": data.amount[2],
+        amount: data.amount[3],
+        "status-ar": data.status[0],
+        status: data.status[1],
+        "verification-ar": data.verification[0],
+        verification: data.verification[1],
+        "approval-code-ar": data.approval[0][0],
+        "approval-label-ar": data.approval[0][1],
+        "approval-label": data.approval[1][0],
+        "approval-code": data.approval[1][1],
+        "footer-date": data.approval[2][0],
+        "footer-time": data.approval[2][1],
+        "thank-you-ar": data.footer[0],
+        "thank-you": data.footer[1],
+        "retain-ar": data.footer[2],
+        retain: data.footer[3],
+        "copy-ar": data.footer[4],
+        copy: data.footer[5],
+        "custom-details": data.customDetails
+      };
+
+      data.technical.flat().forEach((value, index) => {
+        textById[`technical-${index + 1}`] = value;
+      });
+      for (const [id, text] of Object.entries(textById)) {
+        document.getElementById(id).textContent = text;
+      }
+      receipt.dataset.watermark = data.watermark;
+    }
+
+    function showError(message) {
+      receipt.removeAttribute("data-watermark");
+      const error = document.createElement("p");
+      error.className = "receipt-error";
+      error.setAttribute("role", "alert");
+      error.textContent = message;
+      receipt.replaceChildren(error);
+    }
+
+    let data;
+    const serializedData = params.get("receiptData");
+    if (serializedData === null) {
+      data = createLegacyData();
+    } else {
+      try {
+        data = JSON.parse(serializedData);
+      } catch {
+        showError("Invalid receiptData. Provide URL-encoded JSON.");
+      }
+    }
+
+    if (data !== undefined) {
+      try {
+        renderData(validateData(data));
+      } catch (error) {
+        showError(error.message);
+      }
+    }
 
   </script>
 </body>
