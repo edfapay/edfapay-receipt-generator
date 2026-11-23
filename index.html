@@ -5,6 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#ffffff">
   <title>Receipt</title>
+  <script>
+    const cacheBustKey = "receipt-cache-bust";
+    const requestUrl = new URL(window.location.href);
+    const requestTimestamp = requestUrl.searchParams.get("timestamp");
+    if (requestTimestamp && sessionStorage.getItem(cacheBustKey) === requestTimestamp) {
+      sessionStorage.removeItem(cacheBustKey);
+    } else {
+      let timestamp = String(Date.now());
+      if (timestamp === requestTimestamp) timestamp += "-1";
+      requestUrl.searchParams.set("timestamp", timestamp);
+      sessionStorage.setItem(cacheBustKey, timestamp);
+      window.location.replace(requestUrl.href);
+    }
+  </script>
   <style>
     :root {
       color-scheme: light;
@@ -298,10 +312,6 @@
     }
 
     function validateData(value) {
-      if (!value || typeof value !== "object" || Array.isArray(value)) {
-        throw new TypeError("receiptData must be a JSON object.");
-      }
-
       const data = {
         notice: asText(value.notice, "notice"),
         watermark: asText(value.watermark, "watermark"),
@@ -325,6 +335,41 @@
         data[field] = readArray(value[field], field, shape);
       }
       return data;
+    }
+
+    function validateLineData(lines) {
+      if (!Array.isArray(lines)) {
+        throw new TypeError("receiptData must be a JSON array.");
+      }
+
+      const shapes = [3, 3, 2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 6, 3, 3];
+      if (lines.length !== shapes.length) {
+        throw new TypeError(`receiptData must contain ${shapes.length} line(s).`);
+      }
+
+      lines.forEach((line, index) => {
+        if (!Array.isArray(line) || line.length !== shapes[index]) {
+          throw new TypeError(`receiptData[${index}] must contain ${shapes[index]} item(s).`);
+        }
+        line.forEach((value, itemIndex) => asText(value, `receiptData[${index}][${itemIndex}]`));
+      });
+
+      return {
+        notice: lines[0][0],
+        watermark: lines[0][1],
+        customDetails: lines[0][2],
+        header: lines[1],
+        dateTime: lines[2],
+        identifiers: [lines[3], lines[4]],
+        payment: [lines[5], lines[6]],
+        card: lines[7],
+        amount: lines[8],
+        status: lines[9],
+        verification: lines[10],
+        approval: [lines[11], lines[12], lines[13]],
+        footer: lines[14],
+        technical: [lines[15], lines[16]]
+      };
     }
 
     function renderData(data) {
@@ -394,7 +439,17 @@
       try {
         data = JSON.parse(serializedData);
       } catch {
-        showError("Invalid receiptData. Provide URL-encoded JSON.");
+        data = undefined;
+        showError("Invalid receiptData. Provide a URL-encoded JSON array.");
+      }
+
+      if (data !== undefined) {
+        try {
+          data = validateLineData(data);
+        } catch (error) {
+          data = undefined;
+          showError(error.message);
+        }
       }
     }
 
